@@ -1,0 +1,387 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block content %}
+
+
+    {# Оставил код ниже на случай, если в будущем пригодится #}
+
+
+    {#<div class="d-flex justify-content-start">#}
+
+    {# Column #}
+    {#    <div class="form-floating">#}
+    {#        <select class="form-select" id="columnSelect" aria-label="Column example" onchange="displayColumn()">#}
+    {#          <option selected></option>#}
+    {#          <option value="id">id</option>#}
+    {#          <option value="Name">Name</option>#}
+    {#          <option value="Imported From">Imported From</option>#}
+    {#          <option value="How Many">How Many</option>#}
+    {#          <option value="Price/kg">Price/kg</option>#}
+    {#        </select>#}
+    {#        <label for="columnSelect">Column</label>#}
+    {#    </div>#}
+    {##}
+    {#  Operation  #}
+    {#    <div class="form-floating">#}
+    {#        <select class="form-select ms-2" id="operationSelect" aria-label="Default select example" onchange="displayOperation()">#}
+    {#          <option selected></option>#}
+    {#          <option value="<"><</option>#}
+    {#          <option value=">">></option>#}
+    {#          <option value="=">=</option>#}
+    {#          <option value="!=">!=</option>#}
+    {#          <option value="contains">Contains</option>#}
+    {#          <option value="~contains">Does not contain</option>#}
+    {#        </select>#}
+    {#        <label for="operationSelect">Operation</label>#}
+    {#    </div>#}
+    {##}
+    {# How Many #}
+    {#    <div class="form-floating ms-3" style="min-width:5rem;max-width:7rem">#}
+    {#      <input type="number" class="form-control" id="howManySelect" placeholder="name@example.com" oninput="displayHowMany()">#}
+    {#      <label for="howManySelect">How many</label>#}
+    {#    </div>#}
+    {##}
+    {# Price #}
+    {#    <div class="form-floating ms-3" style="min-width:5rem;max-width:7rem">#}
+    {#      <input type="number" class="form-control" id="priceSelect" placeholder="name@example.com" oninput="displayPrice()">#}
+    {#      <label for="priceSelect">Price</label>#}
+    {#    </div>#}
+    {##}
+    {# Text #}
+    {#    <div class="form-floating ms-2" style="min-width:10rem">#}
+    {#      <input type="text" class="form-control" id="textSelect" placeholder="name@example.com" oninput="displayText()">#}
+    {#      <label for="textSelect">Text</label>#}
+    {#    </div>#}
+    {#</div>#}
+    {##}
+    {# Display current choices #}
+    {#<div class="my-3 fs-4">&nbsp;#}
+    {#    <span class="text-muted py-2" id="displayColumn"></span>#}
+    {#    <span class="text-muted py-2" id="displayOperation"></span>#}
+    {#    <span class="text-muted py-2" id="displayHowMany"></span>#}
+    {#    <span class="text-muted py-2" id="displayPrice"></span>#}
+    {#    <span class="text-muted py-2" id="displayText"></span>#}
+    {#</div>#}
+    {##}
+    {#<div><button class="btn btn-info" type="submit">Show result</button></div>#}
+
+    {# <div class="card text-light bg-primary bg-gradient my-3 mx-auto border-neon" style="max-width: 45rem;#}
+    {#clip-path: polygon(9% 0, 91% 0, 100% 16%, 100% 88%, 91% 100%, 9% 100%, 0 90%, 0 16%);#}
+    {#">#}
+    <br>
+    <h1 class="ms-2 text-center">Решение домашнего задания 48, или добро пожаловать в неоновый ад</h1>
+
+    <div class="card bg-dark bg-gradient my-3 mx-auto border-neon" style="max-width: 45rem;">
+        <div class="card-header text-center fs-3">Описание задания homework_l48</div>
+        <div class="card-body">
+            <h5 class="card-title">Написать программу с использованием библиотеки SQLAlchemy, которая:</h5>
+            <p class="card-text">
+            <ol>
+                <li>Создаёт на сервере базу данных для товаров в магазине;</li>
+                <li>Создаёт в этой базе таблицу товаров, где для каждого товара определёно:
+                    <ul>
+                        <li>Название</li>
+                        <li>Местоположение (откуда импортировано)</li>
+                        <li>Количество</li>
+                        <li>Цена</li>
+                        <li>И/или любые другие параметры;</li>
+                    </ul>
+                </li>
+
+                <li>Наполняет таблицу данными (от 10 строк)</li>
+                <li>Делает выборку/группировку по условию, основанному на параметрах.</li>
+            </ol>
+            В личный кабинет загрузить .py файл с исходным ходом программы.
+
+
+            </p>
+        </div>
+    </div>
+
+    <span class="text-muted">Заметка. Здесь мы используем PostgreSQL и Переменную среды для скрытия информации при
+        подключении к базе данных. Также особо ленивые могут сразу <a class="text-decoration-underline text-muted" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">посмотреть весь код</a>.</span>
+
+{#    Offcanvas start#}
+
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel" style="min-width:50rem;">
+  <div class="offcanvas-header bg-code-secondary text-light">
+    <h5 id="offcanvasRightLabel">homework_l48.py</h5>
+    <button type="button" class="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body bg-code text-light">
+    <pre>
+from sqlalchemy import create_engine, Column, Integer, String, or_, and_, delete
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+import psycopg2
+
+import os
+
+
+'''1. Создаёт на сервере базу данных для товаров в магазине;;'''
+
+# Using environment variable to hide connection info
+psql_connect = os.environ.get('POSTGRESQL_CONNECT')
+engine = create_engine(psql_connect, echo=True)
+
+Session = sessionmaker(bind=engine)
+session = Session()
+
+Base = declarative_base()
+
+'''2. Создаёт в этой базе таблицу товаров, где для каждого товара определёно:'''
+class Product(Base):
+    __tablename__ = 'product'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50))
+    imported_from = Column(String(50))
+    how_many = Column(Integer)
+    price = Column(Integer)
+
+Base.metadata.create_all(engine)
+
+
+'''3. Наполняет таблицу <a href="{% url 'magic' %}" class='text-decoration-none text-light'>магическими</a> данными (от 10 строк);'''
+
+session.add_all( [
+    Product(name='Compound - Passion Fruit', imported_from='Cuba', how_many=57, price=294),
+    Product(name='Juice - Lemon', imported_from='Poland', how_many=7, price=211),
+#     ... еще так 28 штук
+
+])
+
+session.commit()
+
+# printing out our products
+products = session.query(Product)
+for product in products:
+    print(f'{product.id} | {product.name} | {product.imported_from} | {product.how_many} | {product.price}')
+
+'''4. Делает выборку/группировку по условию, основанному на параметрах.'''
+
+# id > 15
+products = session.query(Product).filter(Product.id>15)
+session.commit()
+
+# В названии есть слово "Chicken" и стомость между 150 и 250
+products = session.query(Product).filter(and_(Product.name.like('%Chicken%'), (Product.price.between(150, 250))))
+session.commit()
+
+
+# Количество меньше 50 или цена больше 100
+products = session.query(Product).filter(or_(Product.how_many<50), (Product.price>100))
+session.commit()
+
+# Удаляем продукты из Китая
+session.query(Product).filter(Product.imported_from=='China').delete(synchronize_session=False)
+session.commit()
+        </pre>
+  </div>
+</div>
+
+{#    Offcanvas end#}
+
+    <hr class="mx-auto w-50 new">
+    <h6 class="my-3 blue">1. Производим необходимые импорты</h6>
+    <p>
+        <a class="fs-6 neon-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+           aria-expanded="false" aria-controls="collapseExample">Показать код</a>
+        {#        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"#}
+        {#                aria-expanded="false" aria-controls="collapseExample">#}
+        {#            Показать код#}
+        {#        </button>#}
+    </p>
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body bg-code text-light border-neon">
+            <ul class="list-unstyled">
+                <li>
+                    <mark>from</mark>
+                    sqlalchemy
+                    <mark>import</mark>
+                    create_engine, Column, Integer, String, or_, and_, delete
+                </li>
+                <li>
+                    <mark>from</mark>
+                    sqlalchemy.orm
+                    <mark>import</mark>
+                    sessionmaker
+                </li>
+                <li>
+                    <mark>from</mark>
+                    sqlalchemy.ext.declarative
+                    <mark>import</mark>
+                    declarative_base
+                </li>
+                <li>
+                    <mark>import</mark>
+                    psycopg2
+                </li>
+                <li></li>
+                <li>
+                    <mark>import</mark>
+                    os
+                </li>
+            </ul>
+
+        </div>
+    </div>
+
+    <hr class="mx-auto w-50">
+    <h6 class="my-3 blue">2. Подключаемся к PosgtreSQL, создаем сессию и таблицу игроков</h6>
+    <p>
+        <a class="fs-6 neon-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample1"
+           aria-expanded="false" aria-controls="collapseExample">
+            Показать код
+        </a>
+    </p>
+    <div class="collapse" id="collapseExample1">
+        <div class="card card-body bg-code text-light border-neon">
+<pre>
+<span class="text-muted"># Используем environment variable, чтобы спрятать информацию о подключении</span>
+psql_connect = os.environ.get(<span class="text-success">'POSTGRESQL_CONNECT'</span>)
+engine = create_engine(psql_connect, echo=<mark>True</mark>)
+
+Session = sessionmaker(bind=engine)
+session = Session()
+
+Base = declarative_base()
+
+<mark>class</mark> Product(Base):
+    __tablename__ = <span class="text-success">'product'</span>
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50))
+    imported_from = Column(String(50))
+    how_many = Column(Integer)
+    price = Column(Integer)
+
+Base.metadata.create_all(engine)
+</pre>
+
+        </div>
+    </div>
+
+    <hr class="mx-auto w-50">
+    <h6 class="mt-3 blue">3. Наполняем таблицу данными</h6>
+    <p class="mt-3">
+        <a class="fs-6 neon-button" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button"
+           aria-expanded="false" aria-controls="multiCollapseExample1">Показать код</a>
+    </p>
+    <div class="row">
+        <div class="col">
+            <div class="collapse multi-collapse" id="multiCollapseExample1">
+                <div class="card card-body bg-code text-light border-neon">
+<pre>
+session.add_all( [
+    Product(name='Compound - Passion Fruit', imported_from='Cuba', how_many=57, price=294),
+    Product(name='Juice - Lemon', imported_from='Poland', how_many=7, price=211),
+    <span class="text-muted">#... так еще 28 штук</span>
+])
+
+session.commit()
+</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="mx-auto w-50">
+    <h6 class="my-3 blue" id="filters">4. Делаем выборку по условию, основанному на игровых параметрах (кликаем на примеры)</h6>
+
+    <div class="d-flex">
+        <a href="{% url 'id_gt_15'  %}" class="btn btn-outline-primary fs-1 mx-2"
+           style="max-width: 18rem;padding:2rem 4rem;">id > 15</a>
+
+        <a href="{% url 'has_a_price_bw_150_250' %}" class="btn btn-outline-primary fs-5 mx-2" style="max-width: 18rem;padding:2rem 4rem">В названии есть
+           слово 'Chicken' и стомость между 150 и 300</a>
+
+        <a href="{% url 'num_lt_50_or_gt_100' %}" class="btn btn-outline-primary fs-5 mx-2" style="max-width: 18rem;padding:2rem 4rem">Количество меньше
+            50 или цена больше 100</a>
+
+        <a href="{% url 'delete_chinese' %}" class="btn btn-outline-primary fs-5 mx-2" style="max-width: 18rem;padding:2rem 4rem">Удаляем продукты
+            из Китая</a>
+    </div>
+    <a href="{% url 'reset' %}" class="my-3 fs-6 neon-button">Сбросить фильтр</a>
+
+    <p>SQLAlchemy код:</p>
+    <div class="card card-body bg-code text-light mb-3 border-neon">
+        {% if messages %}
+            {% for message in messages %}
+                <div>{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {# Table with contents #}
+    <table class="table table-striped">
+        <thead>
+        <tr style="color:#228dff;font-weight:bold">
+            <th scope="col">id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Imported From</th>
+            <th scope="col">How Many</th>
+            <th scope="col">Price/kg</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in products %}
+            <tr style="color:#228dff; border:#228dff">
+
+                {% if table_state.state == 'full' %}
+                    <th scope="row">{{ item.id }}</th>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.imported }}</td>
+                    <td>{{ item.number }}</td>
+                    <td>${{ item.price }}</td>
+                {% endif %}
+
+                {% if table_state.state == 'id_gt_15' and item.id > 15 %}
+{#                {% elif item.id > 15 %}#}
+                    <th scope="row">{{ item.id }}</th>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.imported }}</td>
+                    <td>{{ item.number }}</td>
+                    <td>${{ item.price }}</td>
+                {% endif %}
+
+                {% if table_state.state == 'has_a_price_bw_150_250' and 'Chicken' in item.name and item.price <= 300 and item.price >= 150 %}
+                    <th scope="row">{{ item.id }}</th>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.imported }}</td>
+                    <td>{{ item.number }}</td>
+                    <td>${{ item.price }}</td>
+                {% endif %}
+
+                {% if table_state.state == 'num_lt_50_or_gt_100' and item.number < 50 and item.price > 100 %}
+                    <th scope="row">{{ item.id }}</th>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.imported }}</td>
+                    <td>{{ item.number }}</td>
+                    <td>${{ item.price }}</td>
+                {% endif %}
+
+                 {% if table_state.state == 'delete_chinese' and not 'China' in item.imported %}
+                    <th scope="row">{{ item.id }}</th>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.imported }}</td>
+                    <td>{{ item.number }}</td>
+                    <td>${{ item.price }}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+
+
+
+
+
+
+
+
+
+{% endblock content %}
