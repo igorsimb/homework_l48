@@ -14,7 +14,7 @@
 - Наполняет таблицу данными (от 10 строк)
 - Делает выборку/группировку по условию, основанному на параметрах.
 
-## Деплой: [forshag.pythonanywhere.com](http://forshag.pythonanywhere.com/)
+## Демо: [forshag.pythonanywhere.com](http://forshag.pythonanywhere.com/)
 
 ### Заметка
 - Технологии: PostgreSQL, sqlalchemy, Bootstrap 5
