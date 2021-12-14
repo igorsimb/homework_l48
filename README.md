@@ -1,6 +1,6 @@
 # Домашняя работа 48
 
-![screenshot](https://github.com/igorsimb/homework_l48/master/assets/screenshot.png?raw=true)
+![screenshot](https://github.com/igorsimb/homework_l48/blob/master/assets/screenshot.png?raw=true)
 
 ## Задание: 
 Написать программу с использованием библиотеки SQLAlchemy, которая:
