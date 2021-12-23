@@ -1,4 +1,4 @@
-# Домашняя работа 48
+# Задание + демо кода
 
 ![screenshot](https://github.com/igorsimb/homework_l48/blob/master/assets/screenshot.png?raw=true)
 
